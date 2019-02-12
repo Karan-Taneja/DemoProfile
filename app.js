@@ -809,14 +809,16 @@ const Pokemon = [
   	"Zeraora"
 ]
 
+const Types = ["Fire", "Water", "Grass", "Electric", "Normal", "Fighting",
+			   "Psychic", "Ghost", "Dark", "Bug", "Flying","Rock", "Ground",
+			   "Steel", "Fairy", "Dragon", "Ice", "Poison"]
+
 //QUERY SELECTOR
 
 const sugimori = document.querySelector('.Sugimori');
 const pkmnName = document.querySelector('.PokemonName');
-const front = document.querySelector('.Front');
-const back = document.querySelector('.Back');
-const sfront = document.querySelector('.Sfront');
-const sback = document.querySelector('.Sback');
+const sprites = document.querySelector('.sprites')
+const types = document.querySelector('.Types')
 
 //FUNCTIONS
 
@@ -824,15 +826,29 @@ const sback = document.querySelector('.Sback');
 
 const generate = () => {
 
-    const number = Math.floor((Math.random() * 809) + 1)
-    const name = Pokemon[number - 1]
+	const number = Math.floor((Math.random() * 809) + 1)
+	const firstN = Math.floor((Math.random() * 17))
+	const secondN = Math.floor((Math.random() * 17))
+	const firstT = Types[firstN];
+	const secondT = Types[secondN];
+	const name = Pokemon[number - 1]
+	const ffN = name.split("’").join("")
 	let numstring = ""
-	const lowerName = name.slice(0,1).toLowerCase() + name.slice(1);
+
+	console.log(ffN)
+
+	let lowerName = name.slice(0,1).toLowerCase() + name.slice(1);
+
+	if(number === 83){
+		lowerName = ffN.slice(0,1).toLowerCase() + ffN.slice(1);
+	}
 
 	let f = ""
 	let b = ""
 	let sF = ""
 	let sB = ""
+	let typeHTML = ""
+	let htmlString = ""
 
 	if(number <= 649){
 		f = `https://img.pokemondb.net/sprites/black-white/normal/${lowerName}.png`
@@ -860,17 +876,48 @@ const generate = () => {
 	}
 
     if(number < 10) numString = `00${number}`
-    else if(number > 10 && number < 100) numString = `0${number}`
+    else if(number >= 10 && number < 100) numString = `0${number}`
     else numString = `${number}`
 
-    const sugimoriLink = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${numString}.png`
+    const sugimoriLink = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${numString}.png`;
+
+	if(b !== "#"){
+		htmlString = `
+		<div>
+			<img class="Front" src="${f}" alt="N/A">
+		</div>
+		<div>
+			<img class="Back" src="${b}" alt="N/A">
+		</div>
+		<div>
+			<img class="Sfront" src="${sF}" alt="N/A">
+		</div>
+		<div>
+			<img class="Sback" src="${sB}" alt="N/A">
+		</div>`
+	}
+	else{
+		htmlString =`
+		<div>
+			<img class="Front" src="${f}" alt="N/A">
+		</div>
+		<div>
+			<img class="Sfront" src="${sF}" alt="N/A">
+		</div>`
+	}
+
+	if(firstT === secondT){
+		typeHTML = `<div class="js-Type1 Type ${firstT}">${firstT}</div>`;
+	}
+	else{
+		typeHTML = `<div class="js-Type1 Type ${firstT}">${firstT}</div>
+					<div class="js-Type2 Type ${secondT}">${secondT}</div>`;
+	}
 
     sugimori.src = sugimoriLink;
 	pkmnName.innerText = `${name} #${numString}`;
-	front.src = f;
-	back.src = b;
-	sfront.src = sF;
-	sback.src = sB;
+	sprites.innerHTML = htmlString;
+	types.innerHTML = typeHTML;
 }
 
 generate()
